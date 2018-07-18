@@ -27,6 +27,10 @@ export class AuthService {
     return this.fb.auth.signInWithEmailAndPassword(email, pass);
   }
 
+  signOut() {
+    this.fb.auth.signOut();
+  }
+
   isAuthenticated(): Observable<boolean> {
     return this.authenticated;
   }
