@@ -1,11 +1,25 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
+import { RouterTestingModule } from '@angular/router/testing';
+import { LoginComponent } from './login/login.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { FormsModule } from '@angular/forms';
+import { AngularFireAuth } from 'angularfire2/auth';
+
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
+      imports: [
+        AppRoutingModule,
+        RouterTestingModule,
+        FormsModule
       ],
+      declarations: [
+        AppComponent,
+        LoginComponent,
+        DashboardComponent
+      ]
     }).compileComponents();
   }));
   it('should create the app', async(() => {
@@ -17,11 +31,5 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app.title).toEqual('app');
-  }));
-  it('should render title in a h1 tag', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to tic-tac-toe!');
   }));
 });
