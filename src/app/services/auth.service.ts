@@ -34,4 +34,8 @@ export class AuthService {
   isAuthenticated(): Observable<boolean> {
     return this.authenticated;
   }
+
+  getUserId(): string {
+    return this.userId;
+  }
 }

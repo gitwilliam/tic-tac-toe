@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 
 import { LoginComponent } from './login.component';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('LoginComponent', () => {
