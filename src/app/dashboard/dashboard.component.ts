@@ -23,10 +23,13 @@ export class DashboardComponent implements OnInit {
   }
 
   newGame(): void {
-    this.gameId = this.games.newGame();
+    this.games.newGame();
+    this.games.getGame(this.auth.getUserId()).subscribe(o => {
+      this.gameId = o;
 
-    // For some reason this code is breaking outside of Angular change detection
-    this.change.detectChanges();
+      // For some reason this code is breaking outside of Angular change detection
+      this.change.detectChanges();
+    });
   }
 
 }
