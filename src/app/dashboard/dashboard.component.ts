@@ -15,6 +15,7 @@ export class DashboardComponent implements OnInit {
   private gameId: string = "";
 
   ngOnInit() {
+    this.loadGameID();
   }
 
   signOut(): void {
@@ -24,6 +25,10 @@ export class DashboardComponent implements OnInit {
 
   newGame(): void {
     this.games.newGame();
+    this.loadGameID();
+  }
+
+  private loadGameID(): void {
     this.games.getGame(this.auth.getUserId()).subscribe(o => {
       this.gameId = o;
 
@@ -31,5 +36,4 @@ export class DashboardComponent implements OnInit {
       this.change.detectChanges();
     });
   }
-
 }

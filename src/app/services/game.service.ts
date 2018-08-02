@@ -40,6 +40,7 @@ export class GameService {
         } else {
           obs.next(s.val());
         }
+        obs.complete();
       });
     });
   }
