@@ -11,12 +11,14 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './/app-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { GameBoardComponent } from './game-board/game-board.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    DashboardComponent
+    DashboardComponent,
+    GameBoardComponent
   ],
   imports: [
     BrowserModule,
