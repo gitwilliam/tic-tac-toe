@@ -19,8 +19,7 @@ export class GameService {
       if (!s.exists()) {
         gameId = require('shortid').generate();
 
-        // writing to database
-        this.db.object(`games/${gameId}`).update({
+        this.db.object(`games/${gameId}/board`).update({
           0: "", 1: "", 2: "",
           3: "", 4: "", 5: "",
           6: "", 7: "", 8: ""
@@ -50,7 +49,7 @@ export class GameService {
     const uid = this.auth.getUserId();
     return new Promise<string[]>((res, rej) => {
       this.getGame().then(o => {
-        this.db.database.ref(`games/${o}`).once('value').then(s => {
+        this.db.database.ref(`games/${o}/board`).once('value').then(s => {
           if (s.exists()) {
             res(s.val());
           } else {
@@ -67,7 +66,7 @@ export class GameService {
         this.getGame().then(o2 => {
           let newBoard = o1;
           newBoard[pos] = piece;
-          this.db.object(`games/${o2}`).set(newBoard);
+          this.db.object(`games/${o2}/board`).set(newBoard);
           res(newBoard);
         });
       });
