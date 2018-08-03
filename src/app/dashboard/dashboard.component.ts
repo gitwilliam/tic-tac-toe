@@ -29,11 +29,12 @@ export class DashboardComponent implements OnInit {
   }
 
   private loadGameID(): void {
-    this.games.getGame(this.auth.getUserId()).subscribe(o => {
+    this.games.getGame().then(o => {
       this.gameId = o;
 
       // For some reason this code is breaking outside of Angular change detection
       this.change.detectChanges();
-    });
+    })
+    .catch(e => console.log(e));
   }
 }

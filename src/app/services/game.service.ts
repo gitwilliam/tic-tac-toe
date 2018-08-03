@@ -33,43 +33,42 @@ export class GameService {
     });
   }
 
-  getGame(user: string): Observable<string> {
-    return new Observable<string>(obs => {
-      this.db.database.ref(`users/${user}/game`).once('value').then(s => {
-        if (!s.exists()) {
-          obs.next("");
+  getGame(): Promise<string> {
+    const uid = this.auth.getUserId();
+    return new Promise<string>((res, rej) => {
+      this.db.database.ref(`users/${uid}/game`).once('value').then(s => {
+        if (s.exists()) {
+          res(s.val());
         } else {
-          obs.next(s.val());
+          rej("Game Not Found");
         }
-        obs.complete();
       });
     });
   }
 
-  getBoard(): Observable<string[]> {
+  getBoard(): Promise<string[]> {
     const uid = this.auth.getUserId();
-    return new Observable<string[]>(obs => {
-      this.getGame(uid).subscribe(o => {
+    return new Promise<string[]>((res, rej) => {
+      this.getGame().then(o => {
         this.db.database.ref(`games/${o}`).once('value').then(s => {
           if (s.exists()) {
-            obs.next(s.val());
+            res(s.val());
+          } else {
+            rej(Error('Board Not Found'))
           }
-          obs.complete();
         });
       });
     });
   }
 
-  play(pos: number, piece: string): Observable<string[]> {
-    const uid = this.auth.getUserId();
-    return new Observable<string[]>(obs => {
-      this.getBoard().subscribe(o1 => {
-        this.getGame(uid).subscribe(o2 => {
+  playPiece(pos: number, piece: string): Promise<string[]> {
+    return new Promise<string[]>((res, rej) => {
+      this.getBoard().then(o1 => {
+        this.getGame().then(o2 => {
           let newBoard = o1;
           newBoard[pos] = piece;
           this.db.object(`games/${o2}`).set(newBoard);
-          obs.next(newBoard);
-          obs.complete();
+          res(newBoard);
         });
       });
     });

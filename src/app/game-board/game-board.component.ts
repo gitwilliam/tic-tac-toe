@@ -17,15 +17,17 @@ export class GameBoardComponent implements OnInit {
   }
 
   play(pos: number) {
-    this.games.play(pos, "X").subscribe(o => {
+    this.games.playPiece(pos, "X").then(o => {
       this.board = o;
       this.change.detectChanges();
-    });
+    })
+    .catch(e => console.log(e));
   }
 
   refreshBoard() {
-    this.games.getBoard().subscribe(o => {
+    this.games.getBoard().then(o => {
       this.board = o;
-    });
+    })
+    .catch(e => console.log(e));
   }
 }
