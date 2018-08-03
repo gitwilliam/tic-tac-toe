@@ -28,6 +28,10 @@ export class DashboardComponent implements OnInit {
     this.loadGameID();
   }
 
+  joinGame(id: string) {
+    this.games.joinGame(id);
+  }
+
   private loadGameID(): void {
     this.games.getGame().then(o => {
       this.gameId = o;

@@ -72,4 +72,13 @@ export class GameService {
       });
     });
   }
+
+  joinGame(id: string) {
+    const uid = this.auth.getUserId();
+    this.db.object(`users/${uid}`).update({
+      game: id
+    });
+
+    this.db.object(`games/${id}/turn`).set(uid);
+  }
 }
