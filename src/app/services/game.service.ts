@@ -32,6 +32,11 @@ export class GameService {
     });
   }
 
+  endGame(): void {
+    const uid = this.auth.getUserId();
+    this.db.object(`users/${uid}/game`).remove();
+  }
+
   getGame(): Promise<string> {
     const uid = this.auth.getUserId();
     return new Promise<string>((res, rej) => {
