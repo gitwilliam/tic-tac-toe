@@ -11,30 +11,38 @@ export class GameService {
 
   constructor(private auth: AuthService, private db: AngularFireDatabase) { }
 
-  newGame(): void {
-    const uid = this.auth.getUserId()
-    let gameId = "";
+  newGame(): Promise<string> {
+    return new Promise<string>((res, rej) => {
+      const uid = this.auth.getUserId()
+      let gameId = "";
 
-    this.db.database.ref(`users/${uid}/game`).once('value').then(s => {
-      if (!s.exists()) {
-        gameId = require('shortid').generate();
+      this.db.database.ref(`users/${uid}/game`).once('value').then(s => {
+        if (!s.exists()) {
+          gameId = require('shortid').generate();
 
-        this.db.object(`games/${gameId}/board`).update({
-          0: "", 1: "", 2: "",
-          3: "", 4: "", 5: "",
-          6: "", 7: "", 8: ""
-        });
+          this.db.object(`games/${gameId}/board`).update({
+            0: "", 1: "", 2: "",
+            3: "", 4: "", 5: "",
+            6: "", 7: "", 8: ""
+          }).catch(e => rej("none"));
 
-        this.db.object(`users/${uid}`).update({
-          game: gameId
-        });
-      }
+          this.db.object(`users/${uid}`).update({
+            game: gameId
+          }).catch(e => rej("none"));
+
+          res(gameId);
+        }
+      }).catch(e => rej("none"));
     });
   }
 
   endGame(): void {
-    const uid = this.auth.getUserId();
-    this.db.object(`users/${uid}/game`).remove();
+    this.getGame().then(id => {
+      this.db.object(`games/${id}`).remove();
+
+      const uid = this.auth.getUserId();
+      this.db.object(`users/${uid}/game`).remove();
+    });
   }
 
   getGame(): Promise<string> {
@@ -44,7 +52,7 @@ export class GameService {
         if (s.exists()) {
           res(s.val());
         } else {
-          rej("Game Not Found");
+          rej("none");
         }
       });
     });
@@ -60,8 +68,8 @@ export class GameService {
           } else {
             rej(Error('Board Not Found'))
           }
-        });
-      });
+        }).catch(e => rej(Error('Board Not Found')));
+      }).catch(e => rej(Error('Board Not Found')));
     });
   }
 

@@ -24,10 +24,10 @@ export class GameBoardComponent implements OnInit {
     .catch(e => console.log(e));
   }
 
-  refreshBoard() {
+  refreshBoard(): void {
     this.games.getBoard().then(o => {
       this.board = o;
     })
-    .catch(e => console.log(e));
+    .catch(e => console.log("The user is not currently in a game"));
   }
 }

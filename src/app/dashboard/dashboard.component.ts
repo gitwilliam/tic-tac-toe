@@ -17,8 +17,10 @@ export class DashboardComponent implements OnInit {
   }
 
   newGame(): void {
-    this.games.newGame();
-    this.loadGameID();
+    this.games.newGame().then(id => {
+      this.gameId = id;
+      this.change.detectChanges();
+    });
   }
 
   endGame(): void {
@@ -41,8 +43,8 @@ export class DashboardComponent implements OnInit {
         this.change.detectChanges();
       })
       .catch(e => {
-        this.gameId = "none";
+        this.gameId = e;
         this.change.detectChanges();
-      });
+        });
   }
 }
