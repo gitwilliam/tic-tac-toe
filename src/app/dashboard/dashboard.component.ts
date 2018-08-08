@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { GameService } from '../services/game.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,24 +9,26 @@ import { GameService } from '../services/game.service';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(private games: GameService, private change: ChangeDetectorRef) { }
+  private gameId$: Observable<string>;
+  private gameId: string;
 
-  private gameId: string = "";
-
-  ngOnInit() {
-    this.loadGameID();
-  }
-
-  newGame(): void {
-    this.games.newGame().then(id => {
-      this.gameId = id;
+  constructor(private games: GameService, private change: ChangeDetectorRef) {
+    this.gameId$ = this.games.getGame();
+    this.gameId$.subscribe(o => {
+      this.gameId = o;
       this.change.detectChanges();
     });
   }
 
+  ngOnInit() {
+  }
+
+  newGame(): void {
+    this.games.newGame();
+  }
+
   endGame(): void {
-    this.games.endGame();
-    this.loadGameID();
+    this.games.deleteGame();
   }
 
   joinGame(id: string) {
@@ -34,17 +37,17 @@ export class DashboardComponent implements OnInit {
   }
 
   private loadGameID(): void {
-    this.games
-      .getGame()
-      .then(o => {
-        this.gameId = o;
+    // this.games
+    //   .getGame()
+    //   .then(o => {
+    //     this.gameId = o;
 
-        // For some reason this code is breaking outside of Angular change detection
-        this.change.detectChanges();
-      })
-      .catch(e => {
-        this.gameId = e;
-        this.change.detectChanges();
-        });
+    //     // For some reason this code is breaking outside of Angular change detection
+    //     this.change.detectChanges();
+    //   })
+    //   .catch(e => {
+    //     this.gameId = e;
+    //     this.change.detectChanges();
+    //     });
   }
 }

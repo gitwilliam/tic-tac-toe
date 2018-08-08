@@ -9,81 +9,77 @@ import { stringify } from '@angular/core/src/util';
 })
 export class GameService {
 
-  constructor(private auth: AuthService, private db: AngularFireDatabase) { }
+  private inGame: boolean = false;
+  private gameId$: Observable<string>;
+  private gameId: string = "";
+  private board$: Observable<string[]>;
+  private board: string[] = ["", "", "", "", "", "", "", "", ""];
 
-  newGame(): Promise<string> {
-    return new Promise<string>((res, rej) => {
-      const uid = this.auth.getUserId()
-      let gameId = "";
+  constructor(private auth: AuthService, private db: AngularFireDatabase) {
+    let uid = this.auth.getUserId();
 
-      this.db.database.ref(`users/${uid}/game`).once('value').then(s => {
-        if (!s.exists()) {
-          gameId = require('shortid').generate();
-
-          this.db.object(`games/${gameId}/board`).update({
-            0: "", 1: "", 2: "",
-            3: "", 4: "", 5: "",
-            6: "", 7: "", 8: ""
-          }).catch(e => rej("none"));
-
-          this.db.object(`users/${uid}`).update({
-            game: gameId
-          }).catch(e => rej("none"));
-
-          res(gameId);
-        }
-      }).catch(e => rej("none"));
-    });
-  }
-
-  endGame(): void {
-    this.getGame().then(id => {
-      this.db.object(`games/${id}`).remove();
-
-      const uid = this.auth.getUserId();
-      this.db.object(`users/${uid}/game`).remove();
-    });
-  }
-
-  getGame(): Promise<string> {
-    const uid = this.auth.getUserId();
-    return new Promise<string>((res, rej) => {
-      this.db.database.ref(`users/${uid}/game`).once('value').then(s => {
-        if (s.exists()) {
-          res(s.val());
-        } else {
-          rej("none");
-        }
+    this.gameId$ = new Observable(o => {
+      this.db.database.ref(`users/${uid}/game`).on('value', s => {
+        o.next(s.val());
+        this.gameId = s.val();
+      }, e => {
+        o.next("none");
+        this.gameId = "none";
       });
     });
-  }
 
-  getBoard(): Promise<string[]> {
-    const uid = this.auth.getUserId();
-    return new Promise<string[]>((res, rej) => {
-      this.getGame().then(o => {
-        this.db.database.ref(`games/${o}/board`).once('value').then(s => {
-          if (s.exists()) {
-            res(s.val());
-          } else {
-            rej(Error('Board Not Found'))
-          }
-        }).catch(e => rej(Error('Board Not Found')));
-      }).catch(e => rej(Error('Board Not Found')));
-    });
-  }
-
-  playPiece(pos: number, piece: string): Promise<string[]> {
-    return new Promise<string[]>((res, rej) => {
-      this.getBoard().then(o1 => {
-        this.getGame().then(o2 => {
-          let newBoard = o1;
-          newBoard[pos] = piece;
-          this.db.object(`games/${o2}/board`).set(newBoard);
-          res(newBoard);
+    this.board$ = new Observable(o => {
+      this.gameId$.subscribe(id => {
+        this.db.database.ref(`games/${id}/board`).on('value', s => {
+          o.next(s.val());
+          this.board = s.val();
+        }, e => {
+          o.next(["", "", "", "", "", "", "", "", ""]);
+          this.board = ["", "", "", "", "", "", "", "", ""];
         });
       });
     });
+  }
+
+  newGame(): void {
+    const uid = this.auth.getUserId()
+
+    this.db.database.ref(`users/${uid}/game/board`).once('value').then(s => {
+      if (!s.exists()) {
+        let id = require('shortid').generate();
+
+        this.db.object(`games/${id}/board`).update({
+          0: "", 1: "", 2: "",
+          3: "", 4: "", 5: "",
+          6: "", 7: "", 8: ""
+        });
+
+        this.db.object(`users/${uid}`).update({
+          game: id
+        });
+      }
+    });
+  }
+
+  deleteGame(): void {
+    this.db.object(`games/${this.gameId}`).remove();
+
+    const uid = this.auth.getUserId();
+    this.db.object(`users/${uid}/game`).remove();
+  }
+
+  getGame(): Observable<string> {
+    return this.gameId$;
+  }
+
+  getBoard(): Observable<string[]> {
+    return this.board$;
+  }
+
+  play(pos: number, piece: string): void {
+    let newBoard = this.board;
+    newBoard[pos] = piece;
+    this.db.object(`games/${this.gameId}/board`).set(newBoard);
   }
 
   joinGame(id: string) {

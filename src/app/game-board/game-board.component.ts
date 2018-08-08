@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { GameService } from '../services/game.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-game-board',
@@ -8,26 +9,21 @@ import { GameService } from '../services/game.service';
 })
 export class GameBoardComponent implements OnInit {
 
-  private board = ["", "", "", "", "", "", "", "", ""];
+  private board$: Observable<string[]>;
+  private board: string[] = ["", "", "", "", "", "", "", "", ""];
 
-  constructor(private games: GameService, private change: ChangeDetectorRef) { }
+  constructor(private games: GameService, private change: ChangeDetectorRef) {
+    this.board$ = this.games.getBoard();
+    this.board$.subscribe(d => {
+      this.board = d;
+      change.detectChanges();
+    });
+  }
 
   ngOnInit() {
-    this.refreshBoard();
   }
 
   play(pos: number) {
-    this.games.playPiece(pos, "X").then(o => {
-      this.board = o;
-      this.change.detectChanges();
-    })
-    .catch(e => console.log(e));
-  }
-
-  refreshBoard(): void {
-    this.games.getBoard().then(o => {
-      this.board = o;
-    })
-    .catch(e => console.log("The user is not currently in a game"));
+    this.games.play(pos, "X");
   }
 }
