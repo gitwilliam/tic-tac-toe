@@ -33,21 +33,5 @@ export class DashboardComponent implements OnInit {
 
   joinGame(id: string) {
     this.games.joinGame(id);
-    this.loadGameID();
-  }
-
-  private loadGameID(): void {
-    // this.games
-    //   .getGame()
-    //   .then(o => {
-    //     this.gameId = o;
-
-    //     // For some reason this code is breaking outside of Angular change detection
-    //     this.change.detectChanges();
-    //   })
-    //   .catch(e => {
-    //     this.gameId = e;
-    //     this.change.detectChanges();
-    //     });
   }
 }

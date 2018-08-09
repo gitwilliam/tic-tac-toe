@@ -24,6 +24,6 @@ export class GameBoardComponent implements OnInit {
   }
 
   play(pos: number) {
-    this.games.play(pos, "X");
+    this.games.play(pos);
   }
 }
