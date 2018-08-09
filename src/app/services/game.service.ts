@@ -89,9 +89,6 @@ export class GameService {
 
   deleteGame(): void {
     this.db.object(`games/${this.gameId}`).remove();
-
-    const uid = this.auth.getUserId();
-    this.db.object(`users/${uid}/game`).remove();
   }
 
   getGame(): Observable<string> {
@@ -105,7 +102,6 @@ export class GameService {
   play(pos: number): void {
     let newBoard = this.board;
     newBoard[pos] = this.piece;
-    console.log(this.board);
     this.db.object(`games/${this.gameId}/board`).set(newBoard);
   }
 
