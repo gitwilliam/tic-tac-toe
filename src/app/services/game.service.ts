@@ -107,12 +107,18 @@ export class GameService {
 
   joinGame(id: string) {
     const uid = this.auth.getUserId();
-    this.db.object(`users/${uid}`).update({
-      game: id
-    });
+    this.db.database.ref(`games/${id}`).once('value').then(v => {
+      if (!v.exists()) {
+        alert("Sorry, a game with ID " + id + " does not exist.");
+      } else {
+        this.db.object(`users/${uid}`).update({
+          game: id
+        });
 
-    // the guest of the game should be "X's"
-    this.db.object(`games/${id}/${uid}`).set("X");
-    this.db.object(`games/${id}/user2`).set(uid);
+        // the guest of the game should be "X's"
+        this.db.object(`games/${id}/${uid}`).set("X");
+        this.db.object(`games/${id}/user2`).set(uid);
+      }
+    });
   }
 }
