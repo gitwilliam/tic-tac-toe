@@ -17,6 +17,7 @@ export class GameService {
   private gameId: string = "";
   private board$: Observable<string[]>;
   private board: string[] = this.EMPTY_BOARD;
+  private turn$: Observable<string>;
 
   constructor(private auth: AuthService, private db: AngularFireDatabase) {
     let uid = this.auth.getUserId();
@@ -61,6 +62,20 @@ export class GameService {
         this.piece = "";
       });
     });
+
+    this.turn$ = new Observable(o => {
+      this.gameId$.subscribe(id => {
+        this.db.database.ref(`games/${id}/turn`).on('value', s => {
+          if (s.exists()) {
+            o.next(s.val());
+          } else {
+            o.next("none");
+          }
+        }, e => {
+          o.next("none");
+        });
+      });
+    });
   }
 
   newGame(): void {
@@ -97,6 +112,10 @@ export class GameService {
 
   getBoard(): Observable<string[]> {
     return this.board$;
+  }
+
+  getTurn(): Observable<string> {
+    return this.turn$;
   }
 
   play(pos: number): void {

@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { GameService } from '../services/game.service';
 import { Observable } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,11 +12,19 @@ export class DashboardComponent implements OnInit {
 
   private gameId$: Observable<string>;
   private gameId: string;
+  private turn$: Observable<string>;
+  private turn: string;
 
-  constructor(private games: GameService, private change: ChangeDetectorRef) {
+  constructor(private games: GameService, private auth: AuthService, private change: ChangeDetectorRef) {
     this.gameId$ = this.games.getGame();
     this.gameId$.subscribe(o => {
       this.gameId = o;
+      this.change.detectChanges();
+    });
+
+    this.turn$ = this.games.getTurn();
+    this.turn$.subscribe(o => {
+      this.turn = (auth.getUserId() === o) ? "You" : "Them";
       this.change.detectChanges();
     });
   }
