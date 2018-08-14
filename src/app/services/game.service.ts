@@ -119,10 +119,8 @@ export class GameService {
   }
 
   play(pos: number): void {
-    let newBoard = this.board;
-    newBoard[pos] = this.piece;
-    this.db.object(`games/${this.gameId}/board`)
-      .set(newBoard)
+    this.db.object(`games/${this.gameId}/board/${pos}`)
+      .set(this.piece)
       .catch(e => alert("Invalid Move!"));
   }
 
