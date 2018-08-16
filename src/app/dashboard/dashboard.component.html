@@ -1,15 +1,15 @@
 <div class="container">
   <div class="row justify-content-md-center">
     <div class="col-md-auto">
-      <button type="end-game" class="btn btn-primary" (click)="endGame()">End Game</button>
+      <button [disabled]="!inGame()" type="end-game" class="btn btn-primary" (click)="endGame()">End Game</button>
     </div>
     <div class="col-md-auto">
-      <button type="new-game" class="btn btn-primary" (click)="newGame()">New Game</button>
+      <button [disabled]="inGame()" type="new-game" class="btn btn-primary" (click)="newGame()">New Game</button>
     </div>
     <div class="col-md-auto">
       <div class="input-group mb-3">
         <div class="input-group-prepend">
-          <button type="join-game" class="btn btn-primary" (click)="joinGame(id.value)">Join Game</button>
+          <button [disabled]="inGame()" type="join-game" class="btn btn-primary" (click)="joinGame(id.value)">Join Game</button>
         </div>
         <input type="text" #id class="form-control" placeholder="Game ID" aria-label="" aria-describedby="basic-addon1">
       </div>

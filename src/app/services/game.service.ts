@@ -12,7 +12,6 @@ export class GameService {
 
   private EMPTY_BOARD = ["", "", "", "", "", "", "", "", ""]; 
   private piece: string = "";
-  private inGame: boolean = false;
   private gameId$: Observable<string>;
   private gameId: string = "";
   private board$: Observable<string[]>;

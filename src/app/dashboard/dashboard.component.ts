@@ -24,7 +24,11 @@ export class DashboardComponent implements OnInit {
 
     this.turn$ = this.games.getTurn();
     this.turn$.subscribe(o => {
-      this.turn = (auth.getUserId() === o) ? "You" : "Them";
+      if (this.inGame()) {
+        this.turn = (auth.getUserId() === o) ? "You" : "Them";
+      } else {
+        this.turn = "n/a";
+      }
       this.change.detectChanges();
     });
   }
@@ -42,5 +46,9 @@ export class DashboardComponent implements OnInit {
 
   joinGame(id: string) {
     this.games.joinGame(id);
+  }
+
+  inGame(): boolean {
+    return this.gameId !== "none";
   }
 }
