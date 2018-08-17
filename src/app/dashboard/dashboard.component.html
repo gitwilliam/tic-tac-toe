@@ -1,6 +1,13 @@
 <div class="container">
   <div class="row justify-content-md-center">
     <div class="col-md-auto">
+      <div class="alert alert-primary" role="alert">
+        {{gameInfo}}
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-md-center">
+    <div class="col-md-auto">
       <button [disabled]="!inGame()" type="end-game" class="btn btn-primary" (click)="endGame()">End Game</button>
     </div>
     <div class="col-md-auto">
@@ -16,9 +23,6 @@
     </div>
     <div class="col-md-auto">
       <span class="badge badge-primary">Game: {{gameId}}</span>
-    </div>
-    <div class="col-md-auto">
-      <span class="badge badge-primary">Turn: {{turn}}</span>
     </div>
   </div>
   <div class="row justify-content-md-center">

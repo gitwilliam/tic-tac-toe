@@ -13,7 +13,7 @@ export class DashboardComponent implements OnInit {
   private gameId$: Observable<string>;
   private gameId: string;
   private turn$: Observable<string>;
-  private turn: string;
+  private gameInfo: string = "";
 
   constructor(private games: GameService, private auth: AuthService, private change: ChangeDetectorRef) {
     this.gameId$ = this.games.getGame();
@@ -25,10 +25,15 @@ export class DashboardComponent implements OnInit {
     this.turn$ = this.games.getTurn();
     this.turn$.subscribe(o => {
       if (this.inGame()) {
-        this.turn = (auth.getUserId() === o) ? "You" : "Them";
+        this.gameInfo = (o === auth.getUserId() ? "Your Turn" : "Their Turn");
       } else {
-        this.turn = "n/a";
+        this.gameInfo = "You are not in a game";
       }
+      this.change.detectChanges();
+    });
+
+    this.games.getWinner().subscribe(o => {
+      this.gameInfo = (o === auth.getUserId() ? "You Won!" : "You Lost!");
       this.change.detectChanges();
     });
   }
