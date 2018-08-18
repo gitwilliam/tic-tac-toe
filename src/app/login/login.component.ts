@@ -21,5 +21,4 @@ export class LoginComponent implements OnInit {
       .then(u => this.router.navigate(["dashboard"]))
       .catch(err => console.log(err));
   }
-
 }
