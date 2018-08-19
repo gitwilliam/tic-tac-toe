@@ -24,11 +24,6 @@ export class RegisterComponent implements OnInit {
     } else {
       this.auth.registerWithEmail(this.email, this.password)
         .then(u => {
-          // add users' space in DB
-          this.db.object(`users/${u.user.uid}`).update({
-            email: this.email
-          });
-
           this.router.navigate(["dashboard"]);
         })
         .catch(e => console.log(e));

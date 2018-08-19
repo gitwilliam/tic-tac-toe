@@ -54,7 +54,11 @@ export class DashboardComponent implements OnInit {
   }
 
   joinGame(id: string) {
-    this.games.joinGame(id);
+    if (id === "") {
+      alert("Enter a valid game ID");
+    } else {
+      this.games.joinGame(id);
+    }
   }
 
   inGame(): boolean {
