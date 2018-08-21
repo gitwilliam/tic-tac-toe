@@ -10,17 +10,16 @@ import { Observable } from 'rxjs';
 export class GameBoardComponent implements OnInit {
 
   private board$: Observable<string[]>;
-  private board: string[] = ["", "", "", "", "", "", "", "", ""];
+  public board: string[] = ["", "", "", "", "", "", "", "", ""];
 
-  constructor(private games: GameService, private change: ChangeDetectorRef) {
+  constructor(private games: GameService, private change: ChangeDetectorRef) { }
+
+  ngOnInit() {
     this.board$ = this.games.getBoard();
     this.board$.subscribe(d => {
       this.board = d;
-      change.detectChanges();
+      this.change.detectChanges();
     });
-  }
-
-  ngOnInit() {
   }
 
   play(pos: number) {

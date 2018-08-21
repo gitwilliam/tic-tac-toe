@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,7 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class NavbarComponent implements OnInit {
 
-  private isAuthenticated$: Observable<boolean>;
+  public isAuthenticated$: Observable<boolean>;
 
   constructor(private auth: AuthService, private router: Router) { }
 

@@ -11,11 +11,13 @@ import { AuthService } from '../services/auth.service';
 export class DashboardComponent implements OnInit {
 
   private gameId$: Observable<string>;
-  private gameId: string;
+  public gameId: string;
   private turn$: Observable<string>;
-  private gameInfo: string = "";
+  public gameInfo: string = "";
 
-  constructor(private games: GameService, private auth: AuthService, private change: ChangeDetectorRef) {
+  constructor(private games: GameService, private auth: AuthService, private change: ChangeDetectorRef) { }
+
+  ngOnInit(): void {
     this.gameId$ = this.games.getGame();
     this.gameId$.subscribe(o => {
       this.gameId = o;
@@ -25,7 +27,7 @@ export class DashboardComponent implements OnInit {
     this.turn$ = this.games.getTurn();
     this.turn$.subscribe(o => {
       if (this.inGame()) {
-        this.gameInfo = (o === auth.getUserId() ? "Your Turn" : "Their Turn");
+        this.gameInfo = (o === this.auth.getUserId() ? "Your Turn" : "Their Turn");
       } else {
         this.gameInfo = "You are not in a game";
       }
@@ -36,13 +38,10 @@ export class DashboardComponent implements OnInit {
       if (o === 'cat') {
         this.gameInfo = "Cat's Scratch!";
       } else {
-        this.gameInfo = (o === auth.getUserId() ? "You Won!" : "You Lost!");
+        this.gameInfo = (o === this.auth.getUserId() ? "You Won!" : "You Lost!");
       }
       this.change.detectChanges();
     });
-  }
-
-  ngOnInit() {
   }
 
   newGame(): void {

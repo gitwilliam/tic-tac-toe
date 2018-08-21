@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { AngularFireDatabase, AngularFireObject, AngularFireList } from 'angularfire2/database';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
@@ -20,10 +20,8 @@ export class GameService {
   private winner$: Observable<string>;
 
   constructor(private auth: AuthService, private db: AngularFireDatabase) {
-    let uid = this.auth.getUserId();
-
     this.gameId$ = new Observable(o => {
-      this.db.database.ref(`users/${uid}/game`).on('value', s => {
+      this.db.database.ref(`users/${this.auth.getUserId()}/game`).on('value', s => {
         if (s.exists()) {
           o.next(s.val());
           this.gameId = s.val();
@@ -56,7 +54,7 @@ export class GameService {
 
     // get piece
     this.gameId$.subscribe(id => {
-      this.db.database.ref(`games/${id}/${uid}`).on('value', s => {
+      this.db.database.ref(`games/${id}/${this.auth.getUserId()}`).on('value', s => {
         this.piece = s.val();
       }, e => {
         this.piece = "";
@@ -86,7 +84,7 @@ export class GameService {
         });
       });
     });
-  }
+   }
 
   newGame(): void {
     const uid = this.auth.getUserId()
